@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+case $1 in
+   "")
+       echo "Available options:
+        up - Bring up the containers
+        up build - Build and bring up the containers
+        down - Take down the containers
+        init - Run dev:init in the PHP container
+        dump - Regenerate autoload in the PHP container"
+       ;;
+   up)
+       if [ "$2" == "build" ]; then
+           docker-compose up --build -d
+       else
+           docker-compose up -d
+       fi
+       ;;
+   down)
+       docker-compose down
+       ;;
+   init)
+        if [ "$2" == "install" ]; then
+            docker-compose run --rm php composer install
+        fi
+        docker-compose run --rm php php artisan dev:init
+        ;;
+   dump)
+       docker-compose run --rm php composer dump-autoload
+       ;;
+esac
